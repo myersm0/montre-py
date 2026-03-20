@@ -36,6 +36,7 @@ class HitList:
 		]
 
 	def _fetch_layer(self, layer):
+		self._corpus._check_open()
 		out_len = _ffi.ffi.new("uint64_t *")
 		layer_bytes = layer.encode("utf-8")
 		array = _ffi.lib.montre_hitlist_texts(
@@ -86,6 +87,7 @@ class HitList:
 		return Counter(self[layer])
 
 	def collocates(self, window=5, layer="lemma", positional=False):
+		self._corpus._check_open()
 		positions_ptr = _ffi.ffi.new("int32_t **")
 		tokens_ptr = _ffi.ffi.new("char ***")
 		offsets_ptr = _ffi.ffi.new("uint64_t **")
@@ -130,6 +132,7 @@ class HitList:
 			_ffi.lib.montre_u64_array_free(raw_offsets, offset_count)
 
 	def project(self, alignment_name):
+		self._corpus._check_open()
 		result_ptr = _ffi.lib.montre_project(
 			self._corpus._ptr, self._ptr, alignment_name.encode("utf-8")
 		)

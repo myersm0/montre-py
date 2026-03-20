@@ -51,10 +51,16 @@ class Corpus:
 			_ffi.lib.montre_corpus_close(self._ptr)
 			self._ptr = _ffi.ffi.NULL
 
+	def _check_open(self):
+		if self._ptr == _ffi.ffi.NULL:
+			raise RuntimeError("corpus is closed")
+
 	def token_count(self):
+		self._check_open()
 		return _ffi.lib.montre_corpus_token_count(self._ptr)
 
 	def layers(self):
+		self._check_open()
 		if self._layers is None:
 			count = _ffi.lib.montre_corpus_layer_count(self._ptr)
 			self._layers = [
@@ -66,6 +72,7 @@ class Corpus:
 		return list(self._layers)
 
 	def documents(self):
+		self._check_open()
 		if self._documents is None:
 			count = _ffi.lib.montre_corpus_document_count(self._ptr)
 			self._documents = [
@@ -77,6 +84,7 @@ class Corpus:
 		return list(self._documents)
 
 	def components(self):
+		self._check_open()
 		count = _ffi.lib.montre_corpus_component_count(self._ptr)
 		result = []
 		for i in range(count):
@@ -90,6 +98,7 @@ class Corpus:
 		return result
 
 	def alignments(self):
+		self._check_open()
 		count = _ffi.lib.montre_corpus_alignment_count(self._ptr)
 		result = []
 		for i in range(count):
@@ -107,6 +116,7 @@ class Corpus:
 		return result
 
 	def query(self, cql, component=None):
+		self._check_open()
 		normalized = _normalize_cql(cql)
 		if component is not None:
 			ptr = _ffi.lib.montre_query_in_component(
@@ -122,6 +132,7 @@ class Corpus:
 		return HitList(ptr, self)
 
 	def count(self, cql):
+		self._check_open()
 		normalized = _normalize_cql(cql)
 		result = _ffi.lib.montre_query_count(self._ptr, normalized.encode("utf-8"))
 		if result < 0:
