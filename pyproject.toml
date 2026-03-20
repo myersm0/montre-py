@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "montre"
+version = "0.1.0"
+description = "Python bindings for the Montre corpus query engine"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = ["cffi>=1.15"]
+
+[project.optional-dependencies]
+pandas = ["pandas>=1.5"]
+
+[tool.setuptools.packages.find]
+include = ["montre*"]
